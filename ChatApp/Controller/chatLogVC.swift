@@ -41,20 +41,71 @@ class chatLogVC: UICollectionViewController, UITextFieldDelegate,UICollectionVie
             })
         })
     }
+    
+    var containerViewBottomAnchor:NSLayoutConstraint!
+    
+    lazy var inputContainerView:UIView = {
+        let containerView = UIView()
+        containerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50)
+        containerView.backgroundColor = UIColor.white
+        
+        let sendButton = UIButton(type: .system)
+        sendButton.setTitle("Send", for: .normal)
+        sendButton.translatesAutoresizingMaskIntoConstraints = false
+        sendButton.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
+        containerView.addSubview(sendButton)
+        
+        //constrains
+        sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
+        sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
+        sendButton.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+        sendButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        
+        containerView.addSubview(self.inputTextField)
+        
+        //constrains
+        self.inputTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 8).isActive = true
+        self.inputTextField.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
+        self.inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive = true
+        self.inputTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+        
+        let seperatorView = UIView()
+        seperatorView.backgroundColor = SEPERATOR_VIEW_COLOR
+        seperatorView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(seperatorView)
+        
+        //constrains
+        seperatorView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
+        seperatorView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
+        seperatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        seperatorView.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
+        
+        return containerView
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 58, right: 0)
-        collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 8, left: 0, bottom: 50, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         collectionView.alwaysBounceVertical = true
         collectionView.backgroundColor = UIColor.white
         collectionView.register(ChatMessageCell.self, forCellWithReuseIdentifier: CELL_ID)
-        setupInputComponent()
+        collectionView.keyboardDismissMode = .interactive
+    }
+    
+    override var inputAccessoryView: UIView?{
+        get{
+            return inputContainerView
+        }
+    }
+    
+    override var canBecomeFirstResponder: Bool{
+        return true
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return messages.count
     }
     
+   
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ChatMessageCell
         let msg = self.messages[indexPath.row]
@@ -93,56 +144,13 @@ class chatLogVC: UICollectionViewController, UITextFieldDelegate,UICollectionVie
         if let text = self.messages[indexPath.row].text{
             height = estimateFrameForText(text: text).height + 20
         }
-        return CGSize(width: view.frame.width, height: height)
+        return CGSize(width: UIScreen.main.bounds.width, height: height)
     }
     
     private func estimateFrameForText(text:String) -> CGRect{
         let size = CGSize(width: 200, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)], context: nil)
-    }
-    
-    func setupInputComponent(){
-        let containerView = UIView()
-        containerView.backgroundColor = UIColor.white
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(containerView)
-        //add constrains
-        containerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        containerView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        containerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        let sendButton = UIButton(type: .system)
-        sendButton.setTitle("Send", for: .normal)
-        sendButton.translatesAutoresizingMaskIntoConstraints = false
-        sendButton.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
-        containerView.addSubview(sendButton)
-        
-        //constrains
-        sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
-        sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        sendButton.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
-        sendButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        
-        containerView.addSubview(inputTextField)
-        
-        //constrains
-        inputTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 8).isActive = true
-        inputTextField.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive = true
-        inputTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
-        
-        let seperatorView = UIView()
-        seperatorView.backgroundColor = SEPERATOR_VIEW_COLOR
-        seperatorView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(seperatorView)
-        
-        //constrains
-        seperatorView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
-        seperatorView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-        seperatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        seperatorView.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
     }
     
     @objc func handleSend(){
