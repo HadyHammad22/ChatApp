@@ -56,21 +56,21 @@ class DataServices{
         completeion(true)
     }
     
-    func sendMessgaeToFirebase(msg: String, id: String, completeion: (_ result:Bool)->()){
+    func sendMessgaeToFirebase(msg: String, toId: String, completeion: (_ result:Bool)->()){
         guard let fromId = Auth.auth().currentUser?.uid else{return}
         let timestamp = Int(NSDate().timeIntervalSince1970)
-        let dict = ["text":msg, "toId":id, "fromId":fromId,"timeStamp":timestamp] as [String : Any]
+        let dict = ["text":msg, "toId":toId, "fromId":fromId,"timeStamp":timestamp] as [String : Any]
         let childRef = REF_MESSAGES.childByAutoId()
         childRef.updateChildValues(dict, withCompletionBlock: { (error, ref) in
             if error != nil{
                 print(error!)
                 return
             }
-            let receiptionUserMessagesRef = self.REF_USER_MESSAGES.child(id)
+            let receiptionUserMessagesRef = self.REF_USER_MESSAGES.child(toId).child(fromId)
             let msgID = childRef.key
             receiptionUserMessagesRef.updateChildValues([msgID!: true])
             
-            let userMessagesRef = self.REF_USER_MESSAGES.child(fromId)
+            let userMessagesRef = self.REF_USER_MESSAGES.child(fromId).child(toId)
             userMessagesRef.updateChildValues([msgID!: true])
         })
         completeion(true)

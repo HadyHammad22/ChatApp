@@ -26,16 +26,14 @@ class chatLogVC: UICollectionViewController, UITextFieldDelegate,UICollectionVie
     
     var messages = [Message]()
     func observeMessages(){
-        guard let id = Auth.auth().currentUser?.uid else{return}
-        DataServices.db.REF_USER_MESSAGES.child(id).observe(.childAdded, with: { (snapshot) in
+        guard let id = Auth.auth().currentUser?.uid, let toId = user?.id else{return}
+        DataServices.db.REF_USER_MESSAGES.child(id).child(toId).observe(.childAdded, with: { (snapshot) in
             DataServices.db.REF_MESSAGES.child(snapshot.key).observe(.value, with: { (snapshot) in
                 if let dict = snapshot.value as? Dictionary<String,Any>{
                     let msg = Message(msg: dict)
-                    if msg.partnerID() == self.user?.id{
-                        self.messages.append(msg)
-                        DispatchQueue.main.async {
-                            self.collectionView.reloadData()
-                        }
+                    self.messages.append(msg)
+                    DispatchQueue.main.async {
+                        self.collectionView.reloadData()
                     }
                 }
             })
@@ -105,7 +103,7 @@ class chatLogVC: UICollectionViewController, UITextFieldDelegate,UICollectionVie
         return messages.count
     }
     
-   
+    
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ChatMessageCell
         let msg = self.messages[indexPath.row]
@@ -154,7 +152,7 @@ class chatLogVC: UICollectionViewController, UITextFieldDelegate,UICollectionVie
     }
     
     @objc func handleSend(){
-        DataServices.db.sendMessgaeToFirebase(msg: inputTextField.text!, id: user!.id! ,completeion: { result in
+        DataServices.db.sendMessgaeToFirebase(msg: inputTextField.text!, toId: user!.id! ,completeion: { result in
             if result{
                 self.inputTextField.text = nil
                 print("Messgae Send Successfully")
