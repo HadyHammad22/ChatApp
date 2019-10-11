@@ -9,6 +9,7 @@
 import UIKit
 
 class ChatMessageCell: UICollectionViewCell {
+    
     let textView:UITextView = {
         let tv = UITextView()
         tv.translatesAutoresizingMaskIntoConstraints = false
@@ -35,6 +36,15 @@ class ChatMessageCell: UICollectionViewCell {
         return iv
     }()
     
+    let messageImage:UIImageView = {
+        let iv = UIImageView()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.layer.cornerRadius = 16
+        iv.layer.masksToBounds = true
+        iv.contentMode = .scaleAspectFill
+        return iv
+    }()
+    
     var containerWidthAnchor:NSLayoutConstraint?
     var containerRightAnchor:NSLayoutConstraint?
     var containerLeftAnchor:NSLayoutConstraint?
@@ -44,6 +54,13 @@ class ChatMessageCell: UICollectionViewCell {
         addSubview(containerView)
         addSubview(textView)
         addSubview(profileImage)
+        containerView.addSubview(messageImage)
+        
+        //Constraints x,y,w,h
+        messageImage.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
+        messageImage.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
+        messageImage.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+        messageImage.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
         
         //Constraints x,y,w,h
         containerRightAnchor = containerView.rightAnchor.constraint(equalTo: self.rightAnchor,constant: -8)

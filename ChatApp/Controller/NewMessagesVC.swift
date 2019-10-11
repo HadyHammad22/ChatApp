@@ -12,7 +12,7 @@ class NewMessagesVC: UITableViewController {
     
     var delegate:MessagesVC!
     var users = [User]()
-    override func viewDidLoad() {
+    override func viewDidLoad(){
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         tableView.register(UserCell.self, forCellReuseIdentifier: CELL_ID)
@@ -47,6 +47,7 @@ class NewMessagesVC: UITableViewController {
         cell.profileImageView.downloadImageUsingCache(imgUrl: user.imgUrl!)
         return cell
     }
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
     }
