@@ -9,12 +9,13 @@
 import UIKit
 
 class ChatMessageCell: UICollectionViewCell {
-    
+    var chatLogController:chatLogVC?
     let textView:UITextView = {
         let tv = UITextView()
         tv.translatesAutoresizingMaskIntoConstraints = false
         tv.font = UIFont.systemFont(ofSize: 16)
         tv.backgroundColor = UIColor.clear
+        tv.isEditable = false
         return tv
     }()
     
@@ -42,6 +43,7 @@ class ChatMessageCell: UICollectionViewCell {
         iv.layer.cornerRadius = 16
         iv.layer.masksToBounds = true
         iv.contentMode = .scaleAspectFill
+        iv.isUserInteractionEnabled = true
         return iv
     }()
     
@@ -61,7 +63,7 @@ class ChatMessageCell: UICollectionViewCell {
         messageImage.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
         messageImage.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
         messageImage.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
-        
+        messageImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleImageTapped)))
         //Constraints x,y,w,h
         containerRightAnchor = containerView.rightAnchor.constraint(equalTo: self.rightAnchor,constant: -8)
         containerRightAnchor?.isActive = true
@@ -89,6 +91,11 @@ class ChatMessageCell: UICollectionViewCell {
         profileImage.widthAnchor.constraint(equalToConstant: 32).isActive = true
         
         
+    }
+    
+    @objc func handleImageTapped(tapGesture: UITapGestureRecognizer){
+        guard let image = tapGesture.view as? UIImageView else {return}
+        self.chatLogController?.performingZoomingForStartingImageView(startingImageView: image)
     }
     
     required init?(coder aDecoder: NSCoder) {
