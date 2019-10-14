@@ -14,12 +14,14 @@ class Message{
     var toId:String?
     var time:NSNumber?
     var imageUrl:String?
+    var videoUrl:String?
     var imageWidth:NSNumber?
     var imageHieght:NSNumber?
     
     init(msg: Dictionary<String,Any>) {
         self.text = msg["text"] as? String
         self.imageUrl = msg["imageUrl"] as? String
+        self.videoUrl = msg["videoUrl"] as? String
         self.fromId = msg["fromId"] as? String
         self.toId = msg["toId"] as? String
         self.time = msg["timeStamp"] as? NSNumber

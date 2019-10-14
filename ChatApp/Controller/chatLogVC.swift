@@ -8,6 +8,9 @@
 
 import UIKit
 import Firebase
+import MobileCoreServices
+import AVFoundation
+
 class chatLogVC: UICollectionViewController, UITextFieldDelegate,UICollectionViewDelegateFlowLayout,UIImagePickerControllerDelegate,UINavigationControllerDelegate {
     lazy var inputTextField:UITextField = {
         let textField = UITextField()
@@ -58,8 +61,8 @@ class chatLogVC: UICollectionViewController, UITextFieldDelegate,UICollectionVie
         //constrains
         uploadImage.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 4).isActive = true
         uploadImage.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        uploadImage.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        uploadImage.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        uploadImage.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        uploadImage.widthAnchor.constraint(equalToConstant: 35).isActive = true
         
         let sendButton = UIButton(type: .system)
         sendButton.setTitle("Send", for: .normal)
@@ -119,23 +122,92 @@ class chatLogVC: UICollectionViewController, UITextFieldDelegate,UICollectionVie
         let imagePicker = UIImagePickerController()
         imagePicker.allowsEditing = true
         imagePicker.delegate = self
+        imagePicker.mediaTypes = [kUTTypeImage,kUTTypeMovie] as [String]
         self.present(imagePicker, animated: true, completion: nil)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let videoUrl = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
+            //we selected video
+            handleVideoSelectedForURL(videoUrl)
+        }else{
+            //we selected image
+            handleImageSelectedForInfo(info: info)
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    private func handleImageSelectedForInfo(info: [UIImagePickerController.InfoKey:Any]){
+        
         if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage{
-            uploadImageToFirebase(image: image)
+            uploadImageToFirebase(image: image, completeion: { (imageUrl) in
+                self.sendMessagesWithImage(imageUrl: imageUrl, image: image)
+            })
         }else{
             print("JESS: A Valid Image Wasn't Selected")
         }
-        dismiss(animated: true, completion: nil)
+        
+    }
+    
+    private func handleVideoSelectedForURL(_ url: URL){
+        let fileName = NSUUID().uuidString + ".mov"
+        let uploadTask = DataServices.db.REF_VIDEOS.child(fileName).putFile(from: url, metadata: nil, completion: { (metadata,error)in
+            if error != nil{
+                print("Failed upload of video", error!)
+                return
+            }else{
+                if let thumbnailImage = self.thumbnailImageForFileURL(url){
+                    self.sendMessageVideoToFirebase(fileName: fileName,thumbnailImage: thumbnailImage)
+                }
+                
+            }
+        })
+        
+        uploadTask.observe(.progress, handler: { (snapshot) in
+            if let completedUnitCount = snapshot.progress?.completedUnitCount{
+                self.navigationItem.title = "\(completedUnitCount)"
+            }
+        })
+        
+        uploadTask.observe(.success, handler: { (snapshot) in
+            self.navigationItem.title = self.user!.name
+        })
+    }
+    
+    private func thumbnailImageForFileURL(_ fileUrl:URL) -> UIImage?{
+        let asset = AVAsset(url: fileUrl)
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        do{
+            let thumbnailCGImage =  try imageGenerator.copyCGImage(at: CMTimeMake(value: 1, timescale: 60), actualTime: nil)
+            return UIImage(cgImage: thumbnailCGImage)
+        }catch let err{
+            print(err)
+        }
+        return nil
+    }
+    
+    private func sendMessageVideoToFirebase(fileName: String, thumbnailImage:UIImage){
+        DataServices.db.REF_VIDEOS.child(fileName).downloadURL(completion: { (url, error) in
+            if let videoUrl = url?.absoluteString{
+                self.uploadImageToFirebase(image: thumbnailImage, completeion: { (imageUrl) in
+                    let dict:[String : Any] = ["imageUrl": imageUrl, "videoUrl": videoUrl, "imageWidth": thumbnailImage.size.width, "imageHieght": thumbnailImage.size.height]
+                    DataServices.db.sendMessgaeToFirebase(toId: self.user!.id!, properties: dict, completeion: { result in
+                        if result{
+                            print("Messgae Sent Successfully")
+                        }
+                    })
+                })
+                
+            }
+        })
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
     }
     
-    func uploadImageToFirebase(image: UIImage){
+    func uploadImageToFirebase(image: UIImage, completeion: @escaping (_ imageUrl: String)->()){
         if let imgData = image.jpegData(compressionQuality: 0.2){
             let imgUid = NSUUID().uuidString
             let metaData = StorageMetadata()
@@ -149,7 +221,7 @@ class chatLogVC: UICollectionViewController, UITextFieldDelegate,UICollectionVie
                     print("JESS: Upload Image To Firebase Storage Successfully")
                     DataServices.db.REF_MESSAGES_IMAGES.child(imgUid).downloadURL(completion: { (url, error) in
                         if let imageUrl = url?.absoluteString{
-                            self.sendMessagesWithImage(imageUrl: imageUrl, image: image)
+                            completeion(imageUrl)
                         }
                     })
                 }
@@ -160,9 +232,9 @@ class chatLogVC: UICollectionViewController, UITextFieldDelegate,UICollectionVie
     
     private func sendMessagesWithImage(imageUrl: String, image: UIImage){
         let dict = [ "imageUrl": imageUrl, "imageWidth": image.size.width, "imageHieght": image.size.height] as [String : Any]
-        DataServices.db.sendMessgaeToFirebase(toId: self.user!.id!, properities: dict, completeion: { result in
+        DataServices.db.sendMessgaeToFirebase(toId: self.user!.id!, properties: dict, completeion: { result in
             if result{
-                print("Messgae Send Successfully")
+                print("Messgae Sent Successfully")
             }
         })
     }
@@ -186,6 +258,7 @@ class chatLogVC: UICollectionViewController, UITextFieldDelegate,UICollectionVie
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ChatMessageCell
         cell.chatLogController = self
         let msg = self.messages[indexPath.row]
+        cell.message = msg
         setupCell(cell: cell, message: msg)
         cell.textView.text = msg.text
         if let text = msg.text{
@@ -195,10 +268,12 @@ class chatLogVC: UICollectionViewController, UITextFieldDelegate,UICollectionVie
             cell.containerWidthAnchor?.constant = 200
             cell.textView.isHidden = true
         }
+        cell.playBtn.isHidden = msg.videoUrl == nil
         return cell
     }
     
     private func setupCell(cell: ChatMessageCell, message: Message){
+        
         if let profileImageUrl = self.user?.imgUrl{
             cell.profileImage.downloadImageUsingCache(imgUrl: profileImageUrl)
         }
@@ -250,7 +325,7 @@ class chatLogVC: UICollectionViewController, UITextFieldDelegate,UICollectionVie
     }
     
     @objc func handleSend(){
-        DataServices.db.sendMessgaeToFirebase(toId: user!.id!, properities: ["text":inputTextField.text!] ,completeion: { result in
+        DataServices.db.sendMessgaeToFirebase(toId: user!.id!, properties: ["text":inputTextField.text!] ,completeion: { result in
             if result{
                 self.inputTextField.text = nil
                 print("Messgae Send Successfully")

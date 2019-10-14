@@ -22,6 +22,7 @@ class DataServices{
     let _REF_MESSAGES = DB_BASE.child("messgaes")
     let _REF_USER_MESSAGES = DB_BASE.child("user_messgaes")
     //Storage_references
+    let _REF_VIDEOS = STORAGE_BASE.child("message-videos")
     let _REF_USER_IMAGES = STORAGE_BASE.child("user-pics")
     let _REF_MESSAGES_IMAGES = STORAGE_BASE.child("message-images")
     
@@ -39,6 +40,10 @@ class DataServices{
     
     var REF_USER_MESSAGES:DatabaseReference{
         return _REF_USER_MESSAGES
+    }
+    
+    var REF_VIDEOS:StorageReference{
+        return _REF_VIDEOS
     }
     
     var REF_USER_IMAGES:StorageReference{
@@ -62,11 +67,11 @@ class DataServices{
         completeion(true)
     }
     
-    func sendMessgaeToFirebase(toId: String, properities: [String:Any], completeion: (_ result:Bool)->()){
+    func sendMessgaeToFirebase(toId: String, properties: [String:Any], completeion: (_ result:Bool)->()){
         guard let fromId = Auth.auth().currentUser?.uid else{return}
         let timestamp = Int(NSDate().timeIntervalSince1970)
         var dict:[String : Any] = ["toId":toId, "fromId":fromId,"timeStamp":timestamp]
-        properities.forEach({dict[$0] = $1})
+        properties.forEach({dict[$0] = $1})
         let childRef = REF_MESSAGES.childByAutoId()
         childRef.updateChildValues(dict, withCompletionBlock: { (error, ref) in
             if error != nil{
