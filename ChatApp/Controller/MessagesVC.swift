@@ -18,6 +18,7 @@ class MessagesVC: UITableViewController{
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "edit"), style: .plain, target: self, action: #selector(handleNewMessages))
         tableView.register(UserCell.self, forCellReuseIdentifier: CELL_ID)
         checkIfUserIsLoggedIn()
+        tableView.allowsMultipleSelectionDuringEditing = true
     }
     
     func observeUserMessages(){
@@ -34,6 +35,11 @@ class MessagesVC: UITableViewController{
                     }
                 })
             })
+        })
+        
+        DataServices.db.REF_USER_MESSAGES.child(uid).observe(.childRemoved, with: { (snapshot) in
+            self.messagesDictionary.removeValue(forKey: snapshot.key)
+            self.attemptReloadOfTable()
         })
         
     }
@@ -66,6 +72,24 @@ class MessagesVC: UITableViewController{
             cell.timeLabel.text = dateFormatter.string(from: timestampDate as Date)
         }
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        guard let uid = Auth.auth().currentUser?.uid else{return}
+        let message = self.messages[indexPath.row]
+        if let partnerID = message.partnerID(){
+            DataServices.db.REF_USER_MESSAGES.child(uid).child(partnerID).removeValue(completionBlock: { (err,ref) in
+                if err != nil{
+                    print("Failed to delete messages",err!)
+                }
+                self.messagesDictionary.removeValue(forKey: partnerID)
+                self.attemptReloadOfTable()
+            })
+        }
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
