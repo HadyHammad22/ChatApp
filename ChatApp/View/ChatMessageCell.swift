@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 class ChatMessageCell: UICollectionViewCell {
     
-    var chatLogController:chatLogVC?
+    var chatLogController:ChatLogVC?
     var message:Message?
     
     let activityIndicatorView:UIActivityIndicatorView = {

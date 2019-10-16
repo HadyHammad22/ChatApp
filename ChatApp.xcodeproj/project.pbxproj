@@ -12,6 +12,7 @@
 		7471E242232ACE9C00B4B799 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471E241232ACE9C00B4B799 /* User.swift */; };
 		747BEA88232976CD003B9E67 /* DataServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747BEA87232976CD003B9E67 /* DataServices.swift */; };
 		7489F5562330F2E3009616DE /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7489F5552330F2E3009616DE /* ChatMessageCell.swift */; };
+		7489FE362355D2AC00743CF1 /* ChatInputContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7489FE352355D2AC00743CF1 /* ChatInputContainerView.swift */; };
 		74937AAB232EB8BC006371F1 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74937AAA232EB8BC006371F1 /* Message.swift */; };
 		74995445232903E400E616F4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74995444232903E400E616F4 /* AppDelegate.swift */; };
 		74995447232903E400E616F4 /* MessagesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74995446232903E400E616F4 /* MessagesVC.swift */; };
@@ -23,8 +24,9 @@
 		749DC638232B6EBF00655ECF /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749DC637232B6EBF00655ECF /* UserCell.swift */; };
 		749DC63A232B767B00655ECF /* LoginHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749DC639232B767B00655ECF /* LoginHandlers.swift */; };
 		749DC63D232C21EF00655ECF /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749DC63C232C21EF00655ECF /* ImageView.swift */; };
-		74BC6461232E559D00729DEE /* chatLogVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74BC6460232E559D00729DEE /* chatLogVC.swift */; };
+		74BC6461232E559D00729DEE /* ChatLogVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74BC6460232E559D00729DEE /* ChatLogVC.swift */; };
 		74C2971F232962CD0091943D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 74C2971E232962CD0091943D /* GoogleService-Info.plist */; };
+		74E64F8D2356F88D000E6A52 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E64F8C2356F88D000E6A52 /* String.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +35,7 @@
 		7471E241232ACE9C00B4B799 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		747BEA87232976CD003B9E67 /* DataServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataServices.swift; sourceTree = "<group>"; };
 		7489F5552330F2E3009616DE /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
+		7489FE352355D2AC00743CF1 /* ChatInputContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInputContainerView.swift; sourceTree = "<group>"; };
 		74937AAA232EB8BC006371F1 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		74995441232903E400E616F4 /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74995444232903E400E616F4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -46,8 +49,9 @@
 		749DC637232B6EBF00655ECF /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		749DC639232B767B00655ECF /* LoginHandlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginHandlers.swift; sourceTree = "<group>"; };
 		749DC63C232C21EF00655ECF /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
-		74BC6460232E559D00729DEE /* chatLogVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chatLogVC.swift; sourceTree = "<group>"; };
+		74BC6460232E559D00729DEE /* ChatLogVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogVC.swift; sourceTree = "<group>"; };
 		74C2971E232962CD0091943D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		74E64F8C2356F88D000E6A52 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		7CCCD6C3073374527311EDCC /* Pods-ChatApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.release.xcconfig"; sourceTree = "<group>"; };
 		F98CAA70DE674A467450695E /* Pods_ChatApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -131,6 +135,7 @@
 			children = (
 				749DC637232B6EBF00655ECF /* UserCell.swift */,
 				7489F5552330F2E3009616DE /* ChatMessageCell.swift */,
+				7489FE352355D2AC00743CF1 /* ChatInputContainerView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -142,7 +147,7 @@
 				7499545C23290DFF00E616F4 /* LoginVC.swift */,
 				7471E23F232AC8B800B4B799 /* NewMessagesVC.swift */,
 				749DC639232B767B00655ECF /* LoginHandlers.swift */,
-				74BC6460232E559D00729DEE /* chatLogVC.swift */,
+				74BC6460232E559D00729DEE /* ChatLogVC.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -159,6 +164,7 @@
 			isa = PBXGroup;
 			children = (
 				749DC63C232C21EF00655ECF /* ImageView.swift */,
+				74E64F8C2356F88D000E6A52 /* String.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -296,12 +302,14 @@
 				747BEA88232976CD003B9E67 /* DataServices.swift in Sources */,
 				74995447232903E400E616F4 /* MessagesVC.swift in Sources */,
 				74995445232903E400E616F4 /* AppDelegate.swift in Sources */,
+				7489FE362355D2AC00743CF1 /* ChatInputContainerView.swift in Sources */,
 				7471E240232AC8B800B4B799 /* NewMessagesVC.swift in Sources */,
 				7499545D23290DFF00E616F4 /* LoginVC.swift in Sources */,
-				74BC6461232E559D00729DEE /* chatLogVC.swift in Sources */,
+				74BC6461232E559D00729DEE /* ChatLogVC.swift in Sources */,
 				749DC63A232B767B00655ECF /* LoginHandlers.swift in Sources */,
 				74937AAB232EB8BC006371F1 /* Message.swift in Sources */,
 				7499545B23290D5300E616F4 /* Constants.swift in Sources */,
+				74E64F8D2356F88D000E6A52 /* String.swift in Sources */,
 				7489F5562330F2E3009616DE /* ChatMessageCell.swift in Sources */,
 				7471E242232ACE9C00B4B799 /* User.swift in Sources */,
 			);

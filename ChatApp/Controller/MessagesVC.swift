@@ -185,7 +185,7 @@ class MessagesVC: UITableViewController{
     }
     
     func showChat(user: User){
-        let chatCollection = chatLogVC(collectionViewLayout: UICollectionViewFlowLayout())
+        let chatCollection = ChatLogVC(collectionViewLayout: UICollectionViewFlowLayout())
         chatCollection.user = user
         navigationController?.pushViewController(chatCollection, animated: true)
     }
