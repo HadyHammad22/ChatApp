@@ -15,3 +15,6 @@ Allows the user to create account and chat with users, could send images and vid
 
 # All Users
 <img src="https://user-images.githubusercontent.com/53533148/75494148-6d1c4580-5970-11ea-9f85-7c009701aa70.png" width="300" height="500">
+
+# Chat Room
+<img src="https://user-images.githubusercontent.com/53533148/75494814-e8cac200-5971-11ea-90d5-eeffc0ac29b9.png" width="300" height="500">
